@@ -17,7 +17,7 @@ class CreateFuelCostsTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('fuel_type_id');
             $table->unsignedBigInteger('period_id');
-            $table->decimal('cost_per_litre',3,2);
+            $table->decimal('cost_per_litre',4,2);
             $table->foreign('fuel_type_id')->references('id')->on('fuel_types')->onDelete('cascade');
             $table->foreign('period_id')->references('id')->on('sale_periods')->onDelete('cascade');
             $table->timestamps();

@@ -12,7 +12,7 @@ class TankReadingsController extends Controller
     //
 
            //
-     public function index()
+    public function index()
     {
        $tanks_readings = Tank_Readings::paginate(12);
         return Tanks_ReadingsResource::collection($tanks_readings);

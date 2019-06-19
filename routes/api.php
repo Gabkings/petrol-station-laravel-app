@@ -103,3 +103,61 @@ Route::put('units/{id}','UnitController@store');
 // delete a task
 Route::delete('units/{id}','UnitController@destroy');
 
+//pumps endpoints
+
+//unit endpoints
+Route::get('pumps','PumpsController@index');
+// get specific fuel_type
+Route::get('pumps/{id}','PumpsController@show');
+// create new task
+Route::post('pumps','PumpsController@store');
+// update existing task
+Route::put('pumps/{id}','PumpsController@store');
+// delete a task
+Route::delete('pumps/{id}','PumpsController@destroy');
+
+
+//fuel cost endpoints
+Route::get('fuel_costs','FuelCostController@index');
+// get specific fuel_type
+Route::get('fuel_costs/{id}','FuelCostController@show');
+// create new task
+Route::post('fuel_costs','FuelCostController@store');
+// update existing task
+Route::put('fuel_costs/{id}','FuelCostController@store');
+// delete a task
+Route::delete('fuel_costs/{id}','FuelCostController@destroy');
+
+//pump sales endpoints
+Route::get('pump_sales','PumpSalesController@index');
+// get specific fuel_type
+Route::get('pump_sales/{id}','PumpSalesController@show');
+// create new task
+Route::post('pump_sales','PumpSalesController@store');
+// update existing task
+Route::put('pump_sales/{id}','PumpSalesController@store');
+// delete a task
+Route::delete('pump_sales/{id}','PumpSalesController@destroy');
+
+//pump sales endpoints
+Route::get('orders','PurchaseOrderController@index');
+// get specific fuel_type
+Route::get('orders/{id}','PurchaseOrderController@show');
+// create new task
+Route::post('orders','PurchaseOrderController@store');
+// update existing task
+Route::put('orders/{id}','PurchaseOrderController@store');
+// delete a task
+Route::delete('orders/{id}','PurchaseOrderController@destroy');
+
+
+//supplies endpoints
+Route::get('supply','SupplyController@index');
+// get specific fuel_type
+Route::get('supply/{id}','SupplyController@show');
+// create new task
+Route::post('supply','SupplyController@store');
+// update existing task
+Route::put('supply/{id}','SupplyController@store');
+// delete a task
+Route::delete('supply/{id}','SupplyController@destroy');
