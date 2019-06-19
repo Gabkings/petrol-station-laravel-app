@@ -1,0 +1,25 @@
+<table class="table" id="table">
+<thead class="head-color thead-inverse">
+    <tr>
+        <th style="border-top-left-radius: 10px; border-left:1px solid transparent;">NAME</th>
+        <th>CLIENT-ID</th>
+        <th>URL</th>
+        <th style="border-top-right-radius: 10px; border-right:1px solid transparent;">ACTIONS</th>
+    </tr>
+</thead>
+<tbody id='table-redirect'>
+    <tr class='lightgrey'>
+        <!-- v-for to create loop / v-bind to bind data to html -->
+        <td class="name1" contenteditable="true">{ agr.name }</td><!--{ data binding } -->
+        <td class="client_id1">{ agr.client_id }</td>
+        <td class="url1" contenteditable="true">{ agr.url }</td>
+        <td>
+            <input id='hidden' name='hidden' type='hidden' value="<?php echo $value->id;?>"> <button v-on:click="editRedirect(name, client_id, url, id)" class='editButton btn' type="button">
+               <img class="col-md-2 edit nopad float-right" src="http://mobisteinlp.com/redirect/public/img/edit.svg"><!-- v-on:click event listener to trigger $.ajax() -->
+            </button>
+            <a href='http://mobisteinlp.com/redirect/public/click.php/?id=%3C?php%20echo%20$id;?%3E'>
+                <img class="col-md-2 link nopad float-right" src="http://mobisteinlp.com/redirect/public/img/copy.svg"><!-- button to generate link -->
+            </a>
+        </td>
+    </tr>
+</tbody>

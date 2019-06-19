@@ -12,7 +12,7 @@ class FuelTypesController extends Controller
     //
      public function index()
     {
-        $fuel_types = Fuel_Types::paginate(12);
+        $fuel_types = Fuel_Types::paginate(12)->whereNull('deleted_at');
         return Fuel_TypesResource::collection($fuel_types);
     }
 
