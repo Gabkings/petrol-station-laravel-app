@@ -41,8 +41,8 @@ class SalePeriodController extends Controller
     public function store(Request $request)  {
  
         $sale_period = $request->isMethod('put') ? Sale_Period::find($request->id) : new Sale_Period;
-        $sale_period->date_from = $request->input('date from');
-        $sale_period->date_to = $request->input('date to');
+        $sale_period->date_from = $request->input('from');
+        $sale_period->date_to = $request->input('to');
         if($sale_period->save()) {
             return new Sale_PeriodResource($sale_period);
         } 

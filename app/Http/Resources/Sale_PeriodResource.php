@@ -16,8 +16,8 @@ class Sale_PeriodResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'date from' => $this->date_from,
-            'date to' => $this->date_to
+            'from' => $this->date_from,
+            'to' => $this->date_to
         ];
     }
 }
