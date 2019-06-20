@@ -42,7 +42,7 @@ class TanksController extends Controller
  
         $tanks = $request->isMethod('put') ? Tanks::find($request->id) : new Tanks;
         $tanks->tank_name = $request->input('name');
-        $tanks->fuel_type_id = $request->input('fuel type id');
+        $tanks->fuel_type_id = $request->input('fuelid');
         if($tanks->save()) {
             return new TanksResource($tanks);
         } 

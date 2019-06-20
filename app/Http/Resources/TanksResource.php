@@ -17,7 +17,7 @@ class TanksResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->tank_name,
-            'fuel type id' => $this->fuel_type_id
+            'fuelid' => $this->fuel_type_id
         ];
     }
 }
