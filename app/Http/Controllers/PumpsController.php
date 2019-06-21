@@ -9,10 +9,33 @@ use App\Http\Resources\PumpsResource;
 class PumpsController extends Controller
 {
 
+    //
+    private function notFoundMessage()
+    {
+        return [
+            'code' => 404,
+            'message' => 'Note not found',
+            'success' => false,
+        ];
+    }
+
+
+    private function successfulMessage($code, $message, $status, $count, $payload)
+    {
+        return [
+            'code' => $code,
+            'message' => $message,
+            'success' => $status,
+            'count' => $count,
+            'data' => $payload,
+        ];
+    }
+
     public function index()
     {
-       $pumps = Pumps::paginate(12);
-        return PumpsResource::collection($pumps);
+        $pumps = Pumps::all();
+        $response = $this->successfulMessage(200, 'Successfully', true, $pumps->count(), $pumps);
+        return response($response);
     }
 
     public function show($id)
@@ -20,35 +43,80 @@ class PumpsController extends Controller
         //Get the task
        $pumps = Pumps::find($id);
  
-        // Return a single task
-        return new PumpsResource($pumps);
-    }
-
-        public function destroy($id)
-    {
-        //Get the task
-       $pumps = Pumps::find($id);
- 
-        if($pumps->delete()) {
-            return new PumpsResource($pumps);
-        }else{
-        	$pumps = "the request items is not found";
-        	return new PumpsResource($pumps);
-
+        if ($pumps) {
+            $response = $this->successfulMessage(200, 'Successfully deleted', true, 0, $pumps);
+        } else {
+            $response = $this->notFoundMessage();
         }
- 
+        return response($response);
     }
 
-    public function store(Request $request)  {
- 
-       $pumps = $request->isMethod('put') ? Pumps::find($request->id) : new Pumps;
-       $pumps->pump_name = $request->input('pump name');
-       $pumps->tank_id = $request->input('tank id');
-       $pumps->unit_id = $request->input('unit id');
-        if($pumps->save()) {
-            return new PumpsResource($pumps);
-        } 
-        
+    public function store(Request $request)
+    {
+      ['','','']
+        $rules = [
+            'name' => 'required',
+            'tank' => 'required',
+            'unit' => 'required'
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            $response['data'] = $validator->messages();
+            return $response;
+        }
+       $pumps = new Pumps;
+       $pumps->pump_name = $request->name;
+       $pumps->tank_id = $request->tank;
+       $pumps->unit_id = $request->unit;
+       $pumps->save();
+        $response = $this->successfulMessage(201, 'Successfully created', true,$pumps->count(),$pumps);
+        return response($response);
+    }
+
+//returns both non-deleted and softdeleted
+    public function PumpsWithSoftDelete()
+    {
+        $pumps = Pumps::withTrashed()->get();
+        $response = $this->successfulMessage(200, 'Successfully', true, $pumps->count(), $pumps);
+        return response($response);
+    }
+
+
+//get the Pumpss that are soft deleted only
+    public function softDeleted()
+    {
+        $pumps = Pumps::onlyTrashed()->get();
+        $response = $this->successfulMessage(200, 'Successfully', true, 
+            $pumps->count(), $pumps);
+        return response($response);
+    }
+
+// restoring the soft deleted 
+
+    public function restore($id)
+    {
+        $pumps = Pumps::onlyTrashed()->find($id);
+        if (!is_null($pumps)) {
+            $pumps->restore();
+            $response = $this->successfulMessage(200, 'Successfully restored', true, $pumps->count(), $pumps);
+        } else {
+            return response($response);
+        }
+        return response($response);
+    }
+
+//pemanent deleting the soft delete
+
+  public function permanentDeleteSoftDeleted($id)
+    {
+        $pumps = Pumps::onlyTrashed()->find($id);
+        if (!is_null($pumps)) {
+            $pumps->forceDelete();
+            $response = $this->successfulMessage(200, 'Successfully deleted', true, 0, $pumps);
+        } else {
+            return response($response);
+        }
+        return response($response);
     }
 
 }

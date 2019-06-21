@@ -10,42 +10,110 @@ use App\Http\Resources\Sale_PeriodResource;
 class SalePeriodController extends Controller
 {
     //
-
-        //
-     public function index()
+    private function notFoundMessage()
     {
-        $sale_period = Sale_Period::paginate(12);
-        return Sale_PeriodResource::collection($sale_period);
+        return [
+            'code' => 404,
+            'message' => 'Note not found',
+            'success' => false,
+        ];
+    }
+
+
+    private function successfulMessage($code, $message, $status, $count, $payload)
+    {
+        return [
+            'code' => $code,
+            'message' => $message,
+            'success' => $status,
+            'count' => $count,
+            'data' => $payload,
+        ];
+    }
+
+    public function index()
+    {
+        $sale_period = Sale_Period::all();
+        $response = $this->successfulMessage(200, 'Successfully', true, $sale_period->count(), $sale_period);
+        return response($response);
     }
 
     public function show($id)
     {
         //Get the task
-        $sale_period = Sale_Period::find($id);
+       $sale_period = Sale_Period::find($id);
  
-        // Return a single task
-        return new Sale_PeriodResource($sale_period);
+        if ($sale_period) {
+            $response = $this->successfulMessage(200, 'Successfully deleted', true, 0, $sale_period);
+        } else {
+            $response = $this->notFoundMessage();
+        }
+        return response($response);
     }
 
-        public function destroy($id)
+    public function store(Request $request)
     {
-        //Get the task
-        $sale_period = Sale_Period::find($id);
- 
-        if($sale_period->delete()) {
-            return new Sale_PeriodResource($sale_period);
-        } 
- 
+        $rules = [
+            'from' => 'required',
+            'to' => 'required'
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            $response['data'] = $validator->messages();
+            return $response;
+        }
+       $sale_period = new Sale_Period;
+       $sale_period->date_from = $request->from;
+       $sale_period->date_to = $request->to;
+       $sale_period->save();
+        $response = $this->successfulMessage(201, 'Successfully created', true,$sale_period->count(),$sale_period);
+        return response($response);
     }
 
-    public function store(Request $request)  {
- 
-        $sale_period = $request->isMethod('put') ? Sale_Period::find($request->id) : new Sale_Period;
-        $sale_period->date_from = $request->input('from');
-        $sale_period->date_to = $request->input('to');
-        if($sale_period->save()) {
-            return new Sale_PeriodResource($sale_period);
-        } 
-        
+//returns both non-deleted and softdeleted
+    public function Sale_PeriodWithSoftDelete()
+    {
+        $sale_period = Sale_Period::withTrashed()->get();
+        $response = $this->successfulMessage(200, 'Successfully', true, $sale_period->count(), $sale_period);
+        return response($response);
     }
+
+
+//get the Sale_Periods that are soft deleted only
+    public function softDeleted()
+    {
+        $sale_period = Sale_Period::onlyTrashed()->get();
+        $response = $this->successfulMessage(200, 'Successfully', true, 
+            $sale_period->count(), $sale_period);
+        return response($response);
+    }
+
+// restoring the soft deleted 
+
+    public function restore($id)
+    {
+        $sale_period = Sale_Period::onlyTrashed()->find($id);
+        if (!is_null($sale_period)) {
+            $sale_period->restore();
+            $response = $this->successfulMessage(200, 'Successfully restored', true, $sale_period->count(), $sale_period);
+        } else {
+            return response($response);
+        }
+        return response($response);
+    }
+
+//pemanent deleting the soft delete
+
+  public function permanentDeleteSoftDeleted($id)
+    {
+        $sale_period = Sale_Period::onlyTrashed()->find($id);
+        if (!is_null($sale_period)) {
+            $sale_period->forceDelete();
+            $response = $this->successfulMessage(200, 'Successfully deleted', true, 0, $sale_period);
+        } else {
+            return response($response);
+        }
+        return response($response);
+    }
+
 }

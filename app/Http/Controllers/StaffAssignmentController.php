@@ -8,11 +8,32 @@ use App\Http\Requests;
 use App\Http\Resources\Staff_AssignmentResource;
 class StaffAssignmentController extends Controller
 {
-    //
-     public function index()
+    private function notFoundMessage()
     {
-       $staff_assignment = Staff_Assignment::paginate(12);
-        return Staff_AssignmentResource::collection($staff_assignment);
+        return [
+            'code' => 404,
+            'message' => 'Note not found',
+            'success' => false,
+        ];
+    }
+
+
+    private function successfulMessage($code, $message, $status, $count, $payload)
+    {
+        return [
+            'code' => $code,
+            'message' => $message,
+            'success' => $status,
+            'count' => $count,
+            'data' => $payload,
+        ];
+    }
+
+    public function index()
+    {
+        $staff_assignment = Staff_Assignment::all();
+        $response = $this->successfulMessage(200, 'Successfully', true, $staff_assignment->count(), $staff_assignment);
+        return response($response);
     }
 
     public function show($id)
@@ -20,31 +41,77 @@ class StaffAssignmentController extends Controller
         //Get the task
        $staff_assignment = Staff_Assignment::find($id);
  
-        // Return a single task
-        return new Staff_AssignmentResource($staff_assignment);
+        if ($staff_assignment) {
+            $response = $this->successfulMessage(200, 'Successfully deleted', true, 0, $staff_assignment);
+        } else {
+            $response = $this->notFoundMessage();
+        }
+        return response($response);
     }
 
-        public function destroy($id)
+    public function store(Request $request)
     {
-        //Get the task
-       $staff_assignment = Staff_Assignment::find($id);
- 
-        if($staff_assignment->delete()) {
-            return new Staff_AssignmentResource($staff_assignment);
-        } 
- 
+        $rules = [
+            'user_id' => 'required',
+            'assignment_name' => 'required'
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            $response['data'] = $validator->messages();
+            return $response;
+        }
+       $staff_assignment = new Staff_Assignment;
+       $staff_assignment->user_id = $request->user_id;
+       $staff_assignment->assignment_name = $request->assignment_name;
+       $staff_assignment->save();
+        $response = $this->successfulMessage(201, 'Successfully created', true,$staff_assignment->count(),$staff_assignment);
+        return response($response);
     }
 
-    public function store(Request $request)  {
- 
-       $staff_assignment = $request->isMethod('put') ? Staff_Assignment::find($request->id) : new Staff_Assignment;
-       $staff_assignment->user_id = $request->input('user id');
-       $staff_assignment->assignment_name = $request->input('assignment name');
-        if($staff_assignment->save()) {
-            return new Staff_AssignmentResource($staff_assignment);
-        } 
-        
+//returns both non-deleted and softdeleted
+    public function Staff_AssignmentWithSoftDelete()
+    {
+        $staff_assignment = Staff_Assignment::withTrashed()->get();
+        $response = $this->successfulMessage(200, 'Successfully', true, $staff_assignment->count(), $staff_assignment);
+        return response($response);
     }
 
+
+//get the Staff_Assignments that are soft deleted only
+    public function softDeleted()
+    {
+        $staff_assignment = Staff_Assignment::onlyTrashed()->get();
+        $response = $this->successfulMessage(200, 'Successfully', true, 
+            $staff_assignment->count(), $staff_assignment);
+        return response($response);
+    }
+
+// restoring the soft deleted 
+
+    public function restore($id)
+    {
+        $staff_assignment = Staff_Assignment::onlyTrashed()->find($id);
+        if (!is_null($staff_assignment)) {
+            $staff_assignment->restore();
+            $response = $this->successfulMessage(200, 'Successfully restored', true, $staff_assignment->count(), $staff_assignment);
+        } else {
+            return response($response);
+        }
+        return response($response);
+    }
+
+//pemanent deleting the soft delete
+
+  public function permanentDeleteSoftDeleted($id)
+    {
+        $staff_assignment = Staff_Assignment::onlyTrashed()->find($id);
+        if (!is_null($staff_assignment)) {
+            $staff_assignment->forceDelete();
+            $response = $this->successfulMessage(200, 'Successfully deleted', true, 0, $staff_assignment);
+        } else {
+            return response($response);
+        }
+        return response($response);
+    }
 
 }

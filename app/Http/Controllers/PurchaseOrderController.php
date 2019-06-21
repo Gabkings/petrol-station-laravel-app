@@ -10,11 +10,33 @@ use App\Http\Resources\Purchase_OrderResource;
 class PurchaseOrderController extends Controller
 {
 
-        //
-     public function index()
+    //
+    private function notFoundMessage()
     {
-       $purchase_order = Purchase_Order::paginate(12);
-        return Purchase_OrderResource::collection($purchase_order);
+        return [
+            'code' => 404,
+            'message' => 'Note not found',
+            'success' => false,
+        ];
+    }
+
+
+    private function successfulMessage($code, $message, $status, $count, $payload)
+    {
+        return [
+            'code' => $code,
+            'message' => $message,
+            'success' => $status,
+            'count' => $count,
+            'data' => $payload,
+        ];
+    }
+
+    public function index()
+    {
+        $purchase_order = Purchase_Order::all();
+        $response = $this->successfulMessage(200, 'Successfully', true, $purchase_order->count(), $purchase_order);
+        return response($response);
     }
 
     public function show($id)
@@ -22,32 +44,81 @@ class PurchaseOrderController extends Controller
         //Get the task
        $purchase_order = Purchase_Order::find($id);
  
-        // Return a single task
-        return new Purchase_OrderResource($purchase_order);
+        if ($purchase_order) {
+            $response = $this->successfulMessage(200, 'Successfully deleted', true, 0, $purchase_order);
+        } else {
+            $response = $this->notFoundMessage();
+        }
+        return response($response);
     }
 
-        public function destroy($id)
+    public function store(Request $request)
     {
-        //Get the task
-       $purchase_order = Purchase_Order::find($id);
- 
-        if($purchase_order->delete()) {
-            return new Purchase_OrderResource($purchase_order);
-        } 
- 
+        $rules = [
+            'name' => 'required',
+            'volume' => 'required',
+            'user_id' => 'required',
+            'supplier_id' => 'required'
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            $response['data'] = $validator->messages();
+            return $response;
+        }
+       $purchase_order = new Purchase_Order;
+       $purchase_order->fuel_name = $request->name;
+       $purchase_order->fuel_volume = $request->volume;
+       $purchase_order->user_id = $request->user_id;
+       $purchase_order->supplier_id = $request->supplier_id;
+       $purchase_order->save();
+        $response = $this->successfulMessage(201, 'Successfully created', true,$purchase_order->count(),$purchase_order);
+        return response($response);
     }
 
-    public function store(Request $request)  {
- 
-       $purchase_order = $request->isMethod('put') ? Purchase_Order::find($request->id) : new Purchase_Order;
-       $purchase_order->fuel_name = $request->input('name');
-       $purchase_order->fuel_volume = $request->input('volume');
-       $purchase_order->user_id = $request->input('user id');
-       $purchase_order->supplier_id = $request->input('supplier id');
-        if($purchase_order->save()) {
-            return new Purchase_OrderResource($purchase_order);
-        } 
-        
+//returns both non-deleted and softdeleted
+    public function Purchase_OrderWithSoftDelete()
+    {
+        $purchase_order = Purchase_Order::withTrashed()->get();
+        $response = $this->successfulMessage(200, 'Successfully', true, $purchase_order->count(), $purchase_order);
+        return response($response);
+    }
+
+
+//get the Purchase_Orders that are soft deleted only
+    public function softDeleted()
+    {
+        $purchase_order = Purchase_Order::onlyTrashed()->get();
+        $response = $this->successfulMessage(200, 'Successfully', true, 
+            $purchase_order->count(), $purchase_order);
+        return response($response);
+    }
+
+// restoring the soft deleted 
+
+    public function restore($id)
+    {
+        $purchase_order = Purchase_Order::onlyTrashed()->find($id);
+        if (!is_null($purchase_order)) {
+            $purchase_order->restore();
+            $response = $this->successfulMessage(200, 'Successfully restored', true, $purchase_order->count(), $purchase_order);
+        } else {
+            return response($response);
+        }
+        return response($response);
+    }
+
+//pemanent deleting the soft delete
+
+  public function permanentDeleteSoftDeleted($id)
+    {
+        $purchase_order = Purchase_Order::onlyTrashed()->find($id);
+        if (!is_null($purchase_order)) {
+            $purchase_order->forceDelete();
+            $response = $this->successfulMessage(200, 'Successfully deleted', true, 0, $purchase_order);
+        } else {
+            return response($response);
+        }
+        return response($response);
     }
 
 }

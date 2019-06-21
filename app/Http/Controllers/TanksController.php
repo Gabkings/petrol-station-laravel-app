@@ -10,43 +10,124 @@ use App\Http\Resources\TanksResource;
 
 class TanksController extends Controller
 {
-    //
-   //
-     public function index()
+
+    private function notFoundMessage()
     {
-        $tanks = Tanks::paginate(12);
-        return TanksResource::collection($tanks);
+        return [
+            'code' => 404,
+            'message' => 'Note not found',
+            'success' => false,
+        ];
+    }
+
+
+    private function successfulMessage($code, $message, $status, $count, $payload)
+    {
+        return [
+            'code' => $code,
+            'message' => $message,
+            'success' => $status,
+            'count' => $count,
+            'data' => $payload,
+        ];
+    }
+
+    public function index()
+    {
+        $tanks = Tanks::all();
+        $response = $this->successfulMessage(200, 'Successfully', true, $tanks->count(), $tanks);
+        return response($response);
     }
 
     public function show($id)
     {
         //Get the task
-        $tanks = Tanks::find($id);
+       $Tanks = Tanks::find($id);
  
-        // Return a single task
-        return new TanksResource($tanks);
+        if ($tanks) {
+            $response = $this->successfulMessage(200, 'Successfully deleted', true, 0, $tanks);
+        } else {
+            $response = $this->notFoundMessage();
+        }
+        return response($response);
     }
 
-        public function destroy($id)
+    // public function destroy($id)
+    // {
+    //     $tanks = Tanks::destroy($id);
+    //     if ($tanks) {
+    //         $response = $this->successfulMessage(200, 'Successfully deleted', true, 0, $tanks);
+    //     } else {
+    //         $response = $this->notFoundMessage();
+    //     }
+    //     return response($response);
+    // }
+
+
+
+
+    public function store(Request $request)
     {
-        //Get the task
-        $tanks = Tanks::find($id);
- 
-        if($tanks->delete()) {
-            return new TanksResource($tanks);
-        } 
- 
+        $rules = [
+            'tank_name' => 'required',
+            'type_id' => 'required'
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            $response['data'] = $validator->messages();
+            return $response;
+        }
+       $tanks = new Tanks;
+       $tanks->name = $request->name;
+       $tanks->save();
+        $response = $this->successfulMessage(201, 'Successfully created', true,$tanks->count(),$tanks);
+        return response($response);
     }
 
-    public function store(Request $request)  {
- 
-        $tanks = $request->isMethod('put') ? Tanks::find($request->id) : new Tanks;
-        $tanks->tank_name = $request->input('name');
-        $tanks->fuel_type_id = $request->input('fuelid');
-        if($tanks->save()) {
-            return new TanksResource($tanks);
-        } 
-        
+//returns both non-deleted and softdeleted
+    public function tanksWithSoftDelete()
+    {
+        $tanks = Tanks::withTrashed()->get();
+        $response = $this->successfulMessage(200, 'Successfully', true, $tanks->count(), $tanks);
+        return response($response);
+    }
+
+
+//get the Tankss that are soft deleted only
+    public function softDeleted()
+    {
+        $tanks = Tanks::onlyTrashed()->get();
+        $response = $this->successfulMessage(200, 'Successfully', true, 
+            $tanks->count(), $tanks);
+        return response($response);
+    }
+
+// restoring the soft deleted 
+
+    public function restore($id)
+    {
+        $tanks = Tanks::onlyTrashed()->find($id);
+        if (!is_null($tanks)) {
+            $tanks->restore();
+            $response = $this->successfulMessage(200, 'Successfully restored', true, $tanks->count(), $tanks);
+        } else {
+            return response($response);
+        }
+        return response($response);
+    }
+
+//pemanent deleting the soft delete
+
+  public function permanentDeleteSoftDeleted($id)
+    {
+        $tanks = Tanks::onlyTrashed()->find($id);
+        if (!is_null($tanks)) {
+            $tanks->forceDelete();
+            $response = $this->successfulMessage(200, 'Successfully deleted', true, 0, $tanks);
+        } else {
+            return response($response);
+        }
+        return response($response);
     }
 
 }

@@ -3,9 +3,11 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Tanks extends Model
 {
+	use SoftDeletes; 
     protected $fillables = ["tank_name","fuel_type_id"];
 
 

@@ -3,9 +3,11 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Tank_Readings extends Model
 {
+    use SoftDeletes; 
     protected $fillables = [
     	'start_reading','close_reading','tank_id','user_id'
     ];

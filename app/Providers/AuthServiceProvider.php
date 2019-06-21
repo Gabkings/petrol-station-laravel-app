@@ -1,9 +1,13 @@
 <?php
 
 namespace App\Providers;
-
+use Laravel\Passport\Passport;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use App\Models\Passport\Client;
+use App\Models\Passport\Token;
+use App\Models\Passport\AuthCode;
+use App\Models\Passport\PersonalAccessClient;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -24,6 +28,13 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
+        Passport::routes();
+
+        Passport::personalAccessClientId('client-id');
+        Passport::useTokenModel(Token::class);
+        Passport::useClientModel(Client::class);
+        Passport::useAuthCodeModel(AuthCode::class);
+        Passport::usePersonalAccessClientModel(PersonalAccessClient::class);
 
         //
     }

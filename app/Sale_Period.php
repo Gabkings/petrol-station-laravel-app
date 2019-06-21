@@ -3,9 +3,11 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Sale_Period extends Model
 {
+	use SoftDeletes; 
     
     protected $fillables = [
     	'date_from',
