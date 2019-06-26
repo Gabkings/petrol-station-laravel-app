@@ -3,20 +3,20 @@
 namespace App\Providers;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
-use App\Fuel_Cost
-use App\Fuel_Types
-use App\Pump_Sales
-use App\Pumps
-use App\Purchase_Order
-use App\Sale_Period
-use App\Staff 
-use App\Staff_Assignment
-use App\Supplier
-use App\Supply
-use App\Tank_Readings
-use App\Tanks
-use App\Units
-use App\User 
+use App\Fuel_Cost;
+use App\Fuel_Types;
+use App\Pump_Sales;
+use App\Pumps;
+use App\Purchase_Order;
+use App\Sale_Period;
+use App\Staff;
+use App\Staff_Assignment;
+use App\Supplier;
+use App\Supply;
+use App\Tank_Readings;
+use App\Tanks;
+use App\Unit;
+use App\User; 
 class HashIdModelProvider extends ServiceProvider
 {
     /**
@@ -146,13 +146,13 @@ class HashIdModelProvider extends ServiceProvider
     });
       ////////////////////////////////////////////////////////
 
-        Units::created(function($model) {
-        $generator = new Hashids(Units::class, 10);
+        Unit::created(function($model) {
+        $generator = new Hashids(Unit::class, 10);
         $model->url_string = $generator->encode($model->id);
         $model->save();
       });
       Route::bind('post', function ($value) {
-          return Units::where('url_string', $value)->first();
+          return Unit::where('url_string', $value)->first();
     });
       /////////////////////////////////////////////
 
