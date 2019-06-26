@@ -7,6 +7,7 @@ use App\Fuel_Types;
 use App\Http\Requests;
 use App\Http\Resources\Fuel_TypesResource;
 use Illuminate\Support\Facades\Validator;
+use JWTAuth;
 
 class FuelTypesController extends Controller
 {
