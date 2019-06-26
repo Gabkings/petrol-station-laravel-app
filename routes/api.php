@@ -12,16 +12,18 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::post('login', 'UserController@login');
-Route::post('register', 'UserController@register');
-Route::group(['middleware' => 'auth:api'], function(){
-Route::post('details', 'UserController@details');
+
+Route::middleware('auth:api')->get('/user', function (Request $request) {
+    return $request->user();
 });
 
+Route::post('login', 'ApiController@login');
+Route::post('register', 'ApiController@register');
 
-// Route::middleware('auth:api')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
+Route::group(['middleware' => 'auth.jwt'], function () {
+    Route::get('logout', 'ApiController@logout');
+
+    Route::get('user', 'ApiController@getAuthUser');
 
 // get list of fuel_types
 Route::get('fuel_types','FuelTypesController@index');
@@ -43,10 +45,7 @@ Route::get('fuel_types_onlysoft/','FuelTypesController@softDeleted');
 Route::patch('fuel_types_restore/{id}','FuelTypesController@restore');
 //permanent delete the soft delete
 Route::delete('fuel_types_perm_del{id}','FuelTypesController@permanentDeleteSoftDeleted');
-
-
 /////taks endpoints
-
 // get list of fuel_types
 Route::get('tanks','TanksController@index');
 // get specific fuel_type
@@ -57,7 +56,6 @@ Route::post('tanks','TanksController@store');
 Route::put('tanks/{id}','TanksController@store');
 // delete a task
 Route::delete('tanks/{id}','TanksController@destroy');
-
 // get list of sale period
 Route::get('sales_periods','SalePeriodController@index');
 // get specific fuel_type
@@ -78,10 +76,7 @@ Route::get('sales_periods_onlysoft/','SalePeriodController@softDeleted');
 Route::patch('restore_sales_periods/{id}','SalePeriodController@restore');
 //permanent delete the soft delete
 Route::delete('sales_periods_perm_del{id}','SalePeriodController@permanentDeleteSoftDeleted');
-
-
 //suppliers end points 
-
 Route::get('suppliers','SupplierController@index');
 // get specific fuel_type
 Route::get('suppliers/{id}','SupplierController@show');
@@ -101,14 +96,8 @@ Route::get('suppliers_onlysoft/','SupplierController@softDeleted');
 Route::patch('restore_suppliers/{id}','SupplierController@restore');
 //permanent delete the soft delete
 Route::delete('suppliers_perm_del{id}','SupplierController@permanentDeleteSoftDeleted');
-
-
-
-
 //tank reading end points
-
 //suppliers end points 
-
 Route::get('tank_readings','TankReadingsController@index');
 // get specific fuel_type
 Route::get('tank_readings/{id}','TankReadingsController@show');
@@ -127,10 +116,7 @@ Route::get('tank_onlysoft/','TankReadingsController@softDeleted');
 Route::patch('restore_tank/{id}','TankReadingsController@restore');
 //permanent delete the soft delete
 Route::delete('tank_perm_del{id}','TankReadingsController@permanentDeleteSoftDeleted');
-
-
 //suppliers end points 
-
 Route::get('assignments','StaffAssignmentController@index');
 // get specific fuel_type
 Route::get('assignments/{id}','StaffAssignmentController@show');
@@ -150,7 +136,6 @@ Route::get('assignments_onlysoft/','StaffAssignmentController@softDeleted');
 Route::patch('restore_assignments/{id}','StaffAssignmentController@restore');
 //permanent delete the soft delete
 Route::delete('assignments_perm_del{id}','StaffAssignmentController@permanentDeleteSoftDeleted');
-
 //unit endpoints
 Route::get('units','UnitController@index');
 // get specific fuel_type
@@ -171,7 +156,6 @@ Route::get('units_onlysoft/','UnitController@softDeleted');
 Route::patch('restore_unit/{id}','UnitController@restore');
 //permanent delete the soft delete
 Route::delete('unit_perm_del{id}','UnitController@permanentDeleteSoftDeleted');
-
 //pumps endpoints
 Route::get('pumps','PumpsController@index');
 // get specific fuel_type
@@ -192,8 +176,6 @@ Route::get('pumps_onlysoft/','PumpsController@softDeleted');
 Route::patch('pumps_unit/{id}','PumpsController@restore');
 //permanent delete the soft delete
 Route::delete('pumps_perm_del{id}','PumpsController@permanentDeleteSoftDeleted');
-
-
 //fuel cost endpoints
 Route::get('fuel_costs','FuelCostController@index');
 // get specific fuel_type
@@ -213,10 +195,6 @@ Route::get('fuel_costs_onlysoft/','FuelCostController@softDeleted');
 Route::patch('fuel_costs_restore/{id}','FuelCostController@restore');
 //permanent delete the soft delete
 Route::delete('fuel_costs_perm_del{id}','FuelCostController@permanentDeleteSoftDeleted');
-
-
-
-
 //pump sales endpoints
 Route::get('pump_sales','PumpSalesController@index');
 // get specific fuel_type
@@ -236,9 +214,6 @@ Route::get('pump_sales_onlysoft/','PumpSalesController@softDeleted');
 Route::patch('pump_sales_restore/{id}','PumpSalesController@restore');
 //permanent delete the soft delete
 Route::delete('pump_sales_perm_del{id}','PumpSalesController@permanentDeleteSoftDeleted');
-
-
-
 //pump sales endpoints
 Route::get('orders','PurchaseOrderController@index');
 // get specific fuel_type
@@ -259,8 +234,6 @@ Route::get('orders_onlysoft/','PurchaseOrderController@softDeleted');
 Route::patch('orders_periods/{id}','PurchaseOrderController@restore');
 //permanent delete the soft delete
 Route::delete('orders_perm_del{id}','PurchaseOrderController@permanentDeleteSoftDeleted');
-
-
 //supplies endpoints
 Route::get('supply','SupplyController@index');
 // get specific fuel_type
@@ -281,3 +254,4 @@ Route::get('supply_onlysoft/','SupplyController@softDeleted');
 Route::patch('restore_supply/{id}','SupplyController@restore');
 //permanent delete the soft delete
 Route::delete('supply_perm_del{id}','SupplyController@permanentDeleteSoftDeleted');
+});

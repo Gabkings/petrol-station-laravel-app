@@ -10,6 +10,10 @@ use Illuminate\Support\Facades\Validator;
 
 class FuelTypesController extends Controller
 {
+    public function __construct()
+    {
+        $this->user = JWTAuth::parseToken()->authenticate();
+    }
     private function notFoundMessage()
     {
         return [
