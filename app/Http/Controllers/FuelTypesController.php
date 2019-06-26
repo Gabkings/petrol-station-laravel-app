@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Fuel_Types;
 use App\Http\Requests;
 use App\Http\Resources\Fuel_TypesResource;
+use Illuminate\Support\Facades\Validator;
 
 class FuelTypesController extends Controller
 {
@@ -50,16 +51,16 @@ class FuelTypesController extends Controller
         return response($response);
     }
 
-    // public function destroy($id)
-    // {
-    //     $fuel_types = Fuel_Types::destroy($id);
-    //     if ($fuel_types) {
-    //         $response = $this->successfulMessage(200, 'Successfully deleted', true, 0, $fuel_types);
-    //     } else {
-    //         $response = $this->notFoundMessage();
-    //     }
-    //     return response($response);
-    // }
+    public function destroy($id)
+    {
+        $fuel_types = Fuel_Types::destroy($id);
+        if ($fuel_types) {
+            $response = $this->successfulMessage(200, 'Successfully deleted', true, 0, $fuel_types);
+        } else {
+            $response = $this->notFoundMessage();
+        }
+        return response($response);
+    }
 
 
 
@@ -75,7 +76,7 @@ class FuelTypesController extends Controller
             return $response;
         }
        $fuel_types = new Fuel_Types;
-       $fuel_types->name = $request->name;
+       $fuel_types->type_name = $request->name;
        $fuel_types->save();
         $response = $this->successfulMessage(201, 'Successfully created', true,$fuel_types->count(),$fuel_types);
         return response($response);

@@ -40,7 +40,7 @@ Route::get('fuel_types_withsoft/','FuelTypesController@unitsWithSoftDelete');
 //only the soft deleted unts
 Route::get('fuel_types_onlysoft/','FuelTypesController@softDeleted');
 //restore the soft deleted item.
-Route::patch('fuel_types_unit/{id}','FuelTypesController@restore');
+Route::patch('fuel_types_restore/{id}','FuelTypesController@restore');
 //permanent delete the soft delete
 Route::delete('fuel_types_perm_del{id}','FuelTypesController@permanentDeleteSoftDeleted');
 
