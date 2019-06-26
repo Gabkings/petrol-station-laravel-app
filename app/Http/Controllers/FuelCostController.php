@@ -6,9 +6,13 @@ use Illuminate\Http\Request;
 use App\Fuel_Cost;
 use App\Http\Requests;
 use App\Http\Resources\Fuel_CostResource;
-
+use JWTAuth;
 class FuelCostController extends Controller
 {
+    public function __construct()
+    {
+        $this->user = JWTAuth::parseToken()->authenticate();
+    }
 
     private function notFoundMessage()
     {

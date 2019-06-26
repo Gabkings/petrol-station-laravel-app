@@ -15,6 +15,7 @@ class CreateUnitsTable extends Migration
     {
         Schema::create('units', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('url_string')->nullable();
             $table->unsignedBigInteger('assignments_id');
             $table->foreign('assignments_id')->references('id')->on('staff_assignments')->onDelete('cascade');
             $table->timestamps();

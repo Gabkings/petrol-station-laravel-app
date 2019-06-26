@@ -15,6 +15,7 @@ class CreateFuelCostsTable extends Migration
     {
         Schema::create('fuel_costs', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('url_string')->nullable();
             $table->unsignedBigInteger('fuel_type_id');
             $table->unsignedBigInteger('period_id');
             $table->decimal('cost_per_litre',4,2);

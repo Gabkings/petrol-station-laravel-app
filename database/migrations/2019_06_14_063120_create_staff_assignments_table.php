@@ -15,6 +15,7 @@ class CreateStaffAssignmentsTable extends Migration
     {
         Schema::create('staff_assignments', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('url_string')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->string('assignment_name');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

@@ -3,9 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use JWTAuth;
 class DairlySalesController extends Controller
 {
+
+	    public function __construct()
+    {
+        $this->user = JWTAuth::parseToken()->authenticate();
+    }
+
+	
     //
 
        // $fuel_cost = $request->isMethod('put') ? Fuel_Cost::find($request->id) : new Fuel_Cost;

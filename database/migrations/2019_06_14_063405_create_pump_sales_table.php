@@ -15,6 +15,7 @@ class CreatePumpSalesTable extends Migration
     {
         Schema::create('pump_sales', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('url_string')->nullable();
             $table->unsignedBigInteger('pump_id');
             $table->decimal('volume_sold',4,2);
             $table->foreign('pump_id')->references('id')->on('pumps')->onDelete('cascade');

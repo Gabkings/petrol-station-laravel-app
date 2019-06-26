@@ -15,6 +15,7 @@ class CreateSuppliesTable extends Migration
     {
         Schema::create('supplies', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('url_string')->nullable();
             $table->unsignedBigInteger('purchase_order_id');
             $table->string('invoice');
             $table->decimal('amount',4,2);

@@ -7,9 +7,16 @@ use Illuminate\Http\Request;
 use App\Tanks;
 use App\Http\Requests;
 use App\Http\Resources\TanksResource;
+use JWTAuth;
 
 class TanksController extends Controller
 {
+    protected $user;
+
+    public function __construct()
+    {
+        $this->user = JWTAuth::parseToken()->authenticate();
+    }
 
     private function notFoundMessage()
     {

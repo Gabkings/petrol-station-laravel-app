@@ -6,9 +6,16 @@ use Illuminate\Http\Request;
 use App\Tank_Readings;
 use App\Http\Requests;
 use App\Http\Resources\Tanks_ReadingsResource;
+use JWTAuth;
 
 class TankReadingsController extends Controller
 {
+    protected $user;
+
+    public function __construct()
+    {
+        $this->user = JWTAuth::parseToken()->authenticate();
+    }
     //
 
            //

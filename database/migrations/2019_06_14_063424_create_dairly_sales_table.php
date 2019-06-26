@@ -15,6 +15,7 @@ class CreateDairlySalesTable extends Migration
     {
         Schema::create('dairly_sales', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('url_string')->nullable();
             $table->decimal('cash_sale',4,2);
             $table->decimal('credit_sale',4,2);
             $table->unsignedBigInteger('pump_sale_id');

@@ -6,9 +6,16 @@ use Illuminate\Http\Request;
 use App\Purchase_Order;
 use App\Http\Requests;
 use App\Http\Resources\Purchase_OrderResource;
+use JWTAuth;
 
 class PurchaseOrderController extends Controller
 {
+    protected $user;
+
+    public function __construct()
+    {
+        $this->user = JWTAuth::parseToken()->authenticate();
+    }
 
     //
     private function notFoundMessage()

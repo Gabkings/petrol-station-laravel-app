@@ -6,9 +6,16 @@ use Illuminate\Http\Request;
 use App\Sale_Period;
 use App\Http\Requests;
 use App\Http\Resources\Sale_PeriodResource;
+use JWTAuth;
 
 class SalePeriodController extends Controller
 {
+    protected $user;
+
+    public function __construct()
+    {
+        $this->user = JWTAuth::parseToken()->authenticate();
+    }
     //
     private function notFoundMessage()
     {

@@ -6,8 +6,15 @@ use Illuminate\Http\Request;
 use App\Staff_Assignment;
 use App\Http\Requests;
 use App\Http\Resources\Staff_AssignmentResource;
+use JWTAuth;
 class StaffAssignmentController extends Controller
 {
+    protected $user;
+
+    public function __construct()
+    {
+        $this->user = JWTAuth::parseToken()->authenticate();
+    }
     private function notFoundMessage()
     {
         return [

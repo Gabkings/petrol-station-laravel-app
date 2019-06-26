@@ -15,6 +15,7 @@ class CreateSalePeriodsTable extends Migration
     {
         Schema::create('sale_periods', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('url_string')->nullable();
             $table->date('date_from');
             $table->date('date_to');
             $table->timestamps();

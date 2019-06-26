@@ -15,6 +15,7 @@ class CreateFuelTypesTable extends Migration
     {
         Schema::create('fuel_types', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('url_string')->nullable();
             $table->string('type_name')->unique();
             $table->timestamps();
         });

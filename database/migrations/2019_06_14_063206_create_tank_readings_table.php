@@ -15,6 +15,7 @@ class CreateTankReadingsTable extends Migration
     {
         Schema::create('tank_readings', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('url_string')->nullable();
             $table->decimal('start_reading',4,2);
             $table->decimal('close_reading',4,2);
             $table->unsignedBigInteger('tank_id');

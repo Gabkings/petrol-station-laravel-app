@@ -6,9 +6,16 @@ use Illuminate\Http\Request;
 use App\Supplier;
 use App\Http\Requests;
 use App\Http\Resources\SupplierResource;
+use JWTAuth;
 
 class SupplierController extends Controller
 {
+    protected $user;
+
+    public function __construct()
+    {
+        $this->user = JWTAuth::parseToken()->authenticate();
+    }
 
     private function notFoundMessage()
     {

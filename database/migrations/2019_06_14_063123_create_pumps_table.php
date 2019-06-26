@@ -15,6 +15,7 @@ class CreatePumpsTable extends Migration
     {
         Schema::create('pumps', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('url_string')->nullable();
             $table->string('pump_name');
             $table->unsignedBigInteger('tank_id');
             $table->unsignedBigInteger('unit_id');

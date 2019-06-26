@@ -7,9 +7,15 @@ use Illuminate\Http\Request;
 use App\Pump_Sales;
 use App\Http\Requests;
 use App\Http\Resources\Pump_SalesResource;
-
+use JWTAuth;
 class Pump_SalesalesController extends Controller
 {
+    protected $user;
+
+    public function __construct()
+    {
+        $this->user = JWTAuth::parseToken()->authenticate();
+    }
 
     //
     private function notFoundMessage()

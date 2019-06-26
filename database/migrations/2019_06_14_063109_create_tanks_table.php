@@ -15,6 +15,7 @@ class CreateTanksTable extends Migration
     {
         Schema::create('tanks', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('url_string')->nullable();
             $table->string('tank_name');
             $table->unsignedBigInteger('fuel_type_id');
             $table->foreign('fuel_type_id')->references('id')->on('fuel_types')->onDelete('cascade');

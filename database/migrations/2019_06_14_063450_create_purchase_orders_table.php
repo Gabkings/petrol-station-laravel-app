@@ -15,6 +15,7 @@ class CreatePurchaseOrdersTable extends Migration
     {
         Schema::create('purchase_orders', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('url_string')->nullable();
             $table->string('fuel_name');
             $table->decimal('fuel_volume',4,2);
             $table->unsignedBigInteger('user_id');
